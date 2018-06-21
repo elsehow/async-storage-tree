@@ -26,7 +26,8 @@ let asyncStorage = new MockAsyncStorage()
 let asyncTree = asyncStorageTree(asyncStorage)
 // refs we'll use later
 let childId = null
-let subChildId = null
+let grandchildId = null
+let grandchild2Id = null
 
 test('should be able to create and get a root node', t => {
     t.plan(1)
@@ -39,12 +40,12 @@ test('should be able to create and get a root node', t => {
         })
 })
 
-test('should be able to create and get children of root node (when id is null)', t => {
+test('should be able to create and get children of root node (when id is not specified)', t => {
     t.plan(1)
     asyncTree
-        .createChild(null, { foo: 'bar' })
+        .createChild({ foo: 'bar' })
         .then(_ => {
-            return asyncTree.getChildren(null)
+            return asyncTree.getChildren()
         })
         .then(obj => {
             // save id for this node
@@ -55,9 +56,9 @@ test('should be able to create and get children of root node (when id is null)',
 
 test('should be able to create and get parent of a node with children', t => {
     asyncTree
-        .createChild(childId, { wow: 'cool'})
+        .createChild({ wow: 'cool'}, childId)
         .then(_ => {
-            return asyncTree.createChild(childId, { que: 'onda'})
+            return asyncTree.createChild({ que: 'onda'}, childId)
         })
         .then(_ => {
             return asyncTree.getChildren(childId)
@@ -65,7 +66,8 @@ test('should be able to create and get parent of a node with children', t => {
             t.deepEquals(children[0][1].wow, 'cool')
             t.deepEquals(children[1][1].que, 'onda')
             // we'll save one of these ids for later
-            subChildId = children[0][1].id
+            grandchildId = children[0][1].id
+            grandchild2Id = children[1][1].id
             t.end()
         })
 })
@@ -73,7 +75,7 @@ test('should be able to create and get parent of a node with children', t => {
 test("should be able to remove child and, in so doing, update its parent's list of children", t => {
     t.plan(3)
     asyncTree
-        .removeChild(subChildId)
+        .removeChild(grandchildId)
     // check that parent was updated correctly
         .then(_ => {
             return asyncTree.getChildren(childId)
@@ -82,31 +84,58 @@ test("should be able to remove child and, in so doing, update its parent's list 
             t.equals(children.length, 1)
             t.deepEquals(children[0][1].que, 'onda')
             // check that child doesn't exist anymore
-            return asyncTree.getItem(subChildId)
+            return asyncTree.getItem(grandchildId)
         }).then(obj => {
             t.notOk(obj)
         })
 })
 
-// should be able to remove a child and, in so doing, delete its children
+test('should be able to remove a child and, in so doing, delete its children', t => {
+    asyncTree
+        .removeChild(childId)
+        .then(_ => {
+            // root node should list no children
+            return asyncTree.getRoot()
+        }).then(root => {
+            t.deepEquals(root.children, [])
+            // child should not exist
+            return asyncTree.getItem(childId)
+        }).then(child => {
+            t.equals(child, undefined)
+            // child's child should not exist
+            return asyncTree.getItem(grandchild2Id)
+        }).then(child => {
+            t.end()
+        }).catch(err => {
+            console.error('ERR!!!', err)
+            t.end()
+        })
+})
+
+test('getChild should resolve as [] when node has no children', t => {
+    t.plan(1)
+    asyncTree
+        .getChildren()
+        .then(children => t.deepEquals(children, []))
+})
+
+/* TODO Edge cases */
+
+// getRoot() should resolve as error when there's no root in AsyncStorage
+
+// getChildren() of node with no children should resolve as List[None]
+
+// getParent() of a root node should resolve null
+
+// when removeChildren() does not include id, should remove entire tree
+
+// what should happen when we removeChild() of id with no children?
 
 
-
-/* Edge cases */
-
-// should resolve as error when there's no root in AsyncStorage
-
-// should resolve as List[None] to get children of a node with no children
-
-// should resolve as error to get parent of a root node.
-
-// should resolve as error to remove a child whose parent doesn't list it as a child
-
-
-/* Weird adversarial cases */
+/* TODO Weird adversarial cases */
 
 // should error to get children of a non-node object
 
 // should error to get parent of a non-node object
 
-// should error to remove a child that doesn't list that node as a parent
+// removeChild() should resolve as error if parent doesn't list node as a child
