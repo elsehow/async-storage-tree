@@ -3,15 +3,17 @@
 Use React's [async-storage](https://facebook.github.io/react-native/docs/asyncstorage.html)
 to create a tree of objects.
 
+**WIP** - Use at your own peril!
+
+## install
+
+`npm install async-storage-tree`
+
 ## example
 
 ```js
 // TODO
 ```
-
-## install
-
-`npm install async-storage-tree`
 
 ## api
 
