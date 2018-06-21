@@ -9,6 +9,7 @@
   "author": "elsehow",
   "license": "BSD-2-Clause",
   "devDependencies": {
+    "mock-async-storage": "^2.0.2",
     "nodemon": "^1.17.5",
     "tap-spec": "^5.0.0",
     "tape": "^4.9.1"
