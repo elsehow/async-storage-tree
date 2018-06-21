@@ -1,0 +1,16 @@
+{
+  "name": "async-storage-tree",
+  "version": "1.0.0",
+  "description": "Use React's async-storage to create a tree of objects.",
+  "main": "index.js",
+  "scripts": {
+    "test": "nodemon test/test.js | tap-spec"
+  },
+  "author": "elsehow",
+  "license": "BSD-2-Clause",
+  "devDependencies": {
+    "nodemon": "^1.17.5",
+    "tap-spec": "^5.0.0",
+    "tape": "^4.9.1"
+  }
+}
