@@ -17,12 +17,30 @@ to create a tree of objects.
 
 ## api
 
-- createRoot(obj): Promise
+- `createRoot(obj): Promise`
 
-- getRoot(): Promise[Object]
+Set obj as the root.
+Any existing items in `asyncStorage` will go untouched.
 
-- createChild(obj, parentId): Promise
+NOTE - If there is an existing root, its children will be orphaned! We
+recommend to .removeChild() first. (If no arguments are passde to
+removeChild(), the whole tree will be removed, including children of the
+root).
 
-- getChildren(id): Promise[List[Object]]
+- `getRoot(): Promise[Object]`
 
-- removeChild(id): Promise
+Gets root of tree, returns a Promise.
+
+- `createChild(obj, parentId): Promise`
+
+Create `obj` as a new child of the leaf node with a given `id`.
+If no `id` is specified, will create child of the root node.
+
+- `getChildren(id): Promise[List[Object]]`
+
+Get children of node with `id`.
+If no `id` specified, gets the children of the root node.
+
+- `removeChild(id): Promise`
+
+Recursively delete nodes (i.e., id and all children).
