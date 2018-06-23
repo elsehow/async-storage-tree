@@ -102,8 +102,8 @@ module.exports = function asyncStorageTree (asyncStorage) {
     }
 
 
-    /* Removes child with given `id` and all children. */
-    asyncStorage.removeChild = function removeChild (id) {
+    /* Removes child with given `id` and all children.*/
+    asyncStorage.removeChild = function removeChild (id=SPECIAL_ROOT_KEY) {
 
         function _recursivelyGetChildIds (id) {
             return asyncStorage

@@ -44,3 +44,4 @@ If no `id` specified, gets the children of the root node.
 - `removeChild(id): Promise`
 
 Recursively delete nodes (i.e., id and all children).
+*TODO:TEST THIS!* If no `id` specified, will remove the entire tree.
